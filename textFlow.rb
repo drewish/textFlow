@@ -46,45 +46,51 @@ begin
   it = app('iTunes')
   Ncurses.stdscr.mvaddstr(1, 0, 'Reading first track...')
 
-  # If iTunes hasn't played anything since starting current_track won't be
+  # If iTunes hasn't played anything since starting then current_track won't be
   # defined. To avoid this we can start and the stop the player.
-  track = nil
   if it.player_state.get == :stopped
     it.play
     it.pause
   end
+  lastTrackId = nil
 
+  # Main loop.
   begin
+    artWidth = 0
+    begin
+      # Check if the track has changed and update the display.
+      if lastTrackId != it.current_track.database_ID.get
+        lastTrackId = it.current_track.database_ID.get
+        Ncurses.stdscr.clear
 
-    # Check if the track has changed and udate the display
-    if it.current_track.get == nil
-      lastTrackId = nil
-      Ncurses.stdscr.clear
-      Ncurses.stdscr.mvaddstr(0, 0, 'No track selected.')
-    elsif lastTrackId != it.current_track.database_ID.get
-      lastTrackId = it.current_track.database_ID.get
-      Ncurses.stdscr.clear
-
-      # Convert the album art into ascii and dump it to the screen.
-      width = 0
-      if it.current_track.artworks.get.length > 0
-        cmd = 'convert - -contrast-stretch 5%x2% jpg:- | jp2a --height=' + (Ncurses.LINES()).to_s + ' -'
-        IO.popen(cmd, 'r+') do |pipe|
-          pipe << it.current_track.artworks.first.get.raw_data.get.data
-          pipe.close_write
-          ascii = pipe.readlines
-          ascii.each_index {|i|
-            Ncurses.stdscr.mvaddstr(i, 0, ascii[i])
-          }
-          width = ascii.first.length
+        # Convert the album art into ascii and dump it to the screen.
+        if it.current_track.artworks.get.length > 0
+          cmd = 'convert - -contrast-stretch 5%x2% jpg:- | jp2a --height=' + (Ncurses.LINES()).to_s + ' -'
+          IO.popen(cmd, 'r+') do |pipe|
+            pipe << it.current_track.artworks.first.get.raw_data.get.data
+            pipe.close_write
+            ascii = pipe.readlines
+            ascii.each_index {|i|
+              Ncurses.stdscr.mvaddstr(i, 0, ascii[i])
+            }
+            artWidth = ascii.first.length
+          end
         end
-      end
 
-      Ncurses.stdscr.mvaddstr(0, width + 2, it.current_track.artist.get)
-      Ncurses.stdscr.mvaddstr(1, width + 2, it.current_track.name.get)
+        Ncurses.stdscr.mvaddstr(Ncurses.LINES() / 2 + 0, artWidth + 2, it.current_track.artist.get)
+        Ncurses.stdscr.mvaddstr(Ncurses.LINES() / 2 + 1, artWidth + 2, it.current_track.name.get)
+        Ncurses.refresh
+      end
+    # Generally the CommandError is thrown when there's not a current track.
+    rescue CommandError
+      Ncurses.stdscr.clear
+      Ncurses.stdscr.mvaddstr(Ncurses.LINES() / 2, artWidth + 2, 'Nothing playing.')
       Ncurses.refresh
+      lastTrackId = nil
     end
 
+    # Wait for keyboard input for half a second then give up so we can check
+    # if the track has changed.
     if IO.select([STDIN], nil, nil, 0.5)
       ch = Ncurses.stdscr.getch()
       case(ch)
