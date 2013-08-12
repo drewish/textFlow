@@ -1,0 +1,10 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rb-appscript (0.6.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rb-appscript
