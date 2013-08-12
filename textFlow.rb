@@ -24,13 +24,14 @@ begin
 end
 include Appscript
 include OSAX
+include Curses
 
 def init_itunes
-  Curses.stdscr.setpos 0, 0
-  Curses.stdscr << "Loading iTunes..."
+  stdscr.setpos 0, 0
+  stdscr << "Loading iTunes..."
 
   it = app 'iTunes'
-  Curses.stdscr << "\nReading first track..."
+  stdscr << "\nReading first track..."
 
   # If iTunes hasn't played anything since starting then current_track won't be
   # defined. To avoid this we can start and the stop the player.
@@ -56,21 +57,21 @@ end
 def draw_album current_track
   ascii = ascii_album current_track
   ascii.each_index {|i|
-    Curses.stdscr.setpos i, 0
-    Curses.stdscr << ascii[i]
+    stdscr.setpos i, 0
+    stdscr << ascii[i]
   }
   ascii.first.length
 end
 
 begin
   # initialize curses
-  Curses.init_screen
-  Curses.cbreak           # provide unbuffered input
-  Curses.noecho           # turn off input echoing
-  Curses.nonl             # turn off newline translation
-  Curses.curs_set 0       # hide the cursor
+  init_screen
+  cbreak           # provide unbuffered input
+  noecho           # turn off input echoing
+  nonl             # turn off newline translation
+  curs_set 0       # hide the cursor
 
-  Curses.stdscr.keypad true     # turn on keypad mode
+  stdscr.keypad true     # turn on keypad mode
 
   it = init_itunes
   last_track_id = nil
@@ -82,31 +83,31 @@ begin
       # Check if the track has changed and update the display.
       if last_track_id != it.current_track.database_ID.get
         last_track_id = it.current_track.database_ID.get
-        Curses.stdscr.clear
+        stdscr.clear
 
         # Convert the album art into ascii and dump it to the screen.
         art_width = draw_album it.current_track
 
-        Curses.stdscr.setpos Curses.lines / 2 + 0, art_width + 2
-        Curses.stdscr << it.current_track.artist.get
+        stdscr.setpos lines / 2 + 0, art_width + 2
+        stdscr << it.current_track.artist.get
 
-        Curses.stdscr.setpos Curses.lines / 2 + 1, art_width + 2
-        Curses.stdscr << it.current_track.name.get
+        stdscr.setpos lines / 2 + 1, art_width + 2
+        stdscr << it.current_track.name.get
       end
     # Generally the CommandError is thrown when there's not a current track.
     rescue CommandError
       last_track_id = nil
-      Curses.stdscr.clear
-      Curses.stdscr.setpos Curses.lines / 2 + 0, art_width + 2
-      Curses.stdscr << 'Nothing playing.'
+      stdscr.clear
+      stdscr.setpos lines / 2 + 0, art_width + 2
+      stdscr << 'Nothing playing.'
     end
 
-    Curses.refresh
+    refresh
 
     # Wait for keyboard input for half a second then give up so we can check
     # if the track has changed.
     if IO.select [STDIN], nil, nil, 0.5
-      ch = Curses.stdscr.getch
+      ch = stdscr.getch
       case ch
       when ?\                then it.playpause
       when Curses::KEY_RIGHT then it.next_track
@@ -120,9 +121,9 @@ begin
 
 # Put everything back when we're done.
 ensure
-  Curses.echo
-  Curses.nocbreak
-  Curses.nl
-  Curses.curs_set 1
-  Curses.close_screen
+  echo
+  nocbreak
+  nl
+  curs_set 1
+  close_screen
 end
