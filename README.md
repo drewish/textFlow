@@ -5,12 +5,19 @@ converts the current track's album art into ASCII for display in a terminal.
 
 ## Requirements
 
-You'll need to use MacPorts (http://www.macports.org) to install ImageMagick
+You'll need to use [Homebrew](http://brew.sh/) to install ImageMagick
 and jp2a:
-    sudo port install jp2a imagemagick +no_x11
 
-You'll also need to use Ruby's gem to install ncurses and appscript:
-    sudo gem install ncurses rb-appscript
+    brew install jp2a imagemagick
+
+You'll also need to use Ruby's gem to install and appscript:
+
+    gem install rb-appscript
+
+or
+
+    bundle install
+
 
 ## For more information
 

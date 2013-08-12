@@ -16,12 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# This script requires the appscript and ncurses libraries.
-# To install it run: sudo gem install rb-appscript ncurses
-#
-# You'll also need to have ImageMagick and jp2a installed.
-# Use MacPorts: sudo port install jp2a imagemagick
-
 begin;
   require 'rubygems'
   require 'osax'
