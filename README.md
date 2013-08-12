@@ -10,7 +10,7 @@ and jp2a:
 
     brew install jp2a imagemagick
 
-You'll also need to use Ruby's gem to install and appscript:
+You'll also need to install the appscript gem:
 
     gem install rb-appscript
 
@@ -28,6 +28,7 @@ Then:
 
 - switch between songs with the arrow keys
 - pause and play with the spacebar
+- mute and unmute (100% volume) with down and up keys
 - quit with `q`
 
 ## For more information
