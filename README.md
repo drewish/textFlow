@@ -18,6 +18,17 @@ or
 
     bundle install
 
+## Operation
+
+Start the program:
+
+    ./textFlow.rb
+
+Then:
+
+- switch between songs with the arrow keys
+- pause and play with the spacebar
+- quit with `q`
 
 ## For more information
 
