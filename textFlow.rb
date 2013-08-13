@@ -43,29 +43,68 @@ def init_itunes
   it
 end
 
-def ascii_album current_track
-  return [] unless current_track.artworks.get.length > 0
+def has_art? current_track
+  current_track.artworks.get.length > 0
+end
 
+# In what ever format it was added to the audio
+def art_from current_track
+  current_track.artworks.first.get.raw_data.get.data
+end
+
+def ascii_album image
   cmd = "convert - -contrast-stretch 5%x2% jpg:- | jp2a --height=#{Curses.lines} -"
   IO.popen(cmd, 'r+') do |pipe|
-    pipe << current_track.artworks.first.get.raw_data.get.data
+    pipe << image
+    pipe.close_write
+    pipe.readlines
+  end
+end
+
+def ansi_album image
+  cmd = "convert - -contrast-stretch 5%x2% jpg:- | jp2a --height=#{Curses.lines} --color -"
+  IO.popen(cmd, 'r+') do |pipe|
+    pipe << image
     pipe.close_write
     pipe.readlines
   end
 end
 
 def draw_album current_track
-  ascii = ascii_album current_track
-  ascii.each_index {|i|
-    stdscr.setpos i, 0
-    stdscr << ascii[i]
-  }
-  ascii.first.length
+  return 0 unless has_art? current_track
+
+  stdscr.setpos 0, 0
+
+  image = art_from current_track
+  if has_colors?
+    ansi = ansi_album image
+    ansi.each do |line|
+      # Extract each pair of ANSI color and text (including resets).
+      line.scan /\e\[(\d{1,2})m([^\e]+)?/ do |code, text|
+        attron color_pair(code.to_i) | A_NORMAL
+        stdscr << text
+      end
+    end
+    ansi.first.chomp.gsub(/\e\[\d{1,2}m/, '').length
+  else
+    ascii = ascii_album image
+    stdscr << ascii.join
+    ascii.first.length
+  end
 end
 
 begin
   # initialize curses
   init_screen
+  if has_colors?
+    start_color
+    [ COLOR_BLACK, COLOR_RED, COLOR_GREEN, COLOR_YELLOW,
+      COLOR_BLUE, COLOR_MAGENTA, COLOR_CYAN, COLOR_WHITE
+    ].each do |c|
+      # Use the ANSI color number as the pair's number.
+      init_pair 30 + c, c, COLOR_BLACK
+    end
+  end
   cbreak           # provide unbuffered input
   noecho           # turn off input echoing
   nonl             # turn off newline translation
@@ -85,7 +124,6 @@ begin
         last_track_id = it.current_track.database_ID.get
         stdscr.clear
 
-        # Convert the album art into ascii and dump it to the screen.
         art_width = draw_album it.current_track
 
         stdscr.setpos lines / 2 + 0, art_width + 2
