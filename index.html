@@ -1,36 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="textFlow : Ruby script to convert iTunes album art into ASCII" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>textFlow by drewish</title>
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>textFlow</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>textFlow</h1>
+        <p>Ruby script to convert iTunes album art into ASCII</p>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/drewish/textFlow">View on GitHub</a>
+        <p class="view"><a href="https://github.com/drewish/textFlow">View the Project on GitHub <small>drewish/textFlow</small></a></p>
 
-          <h1 id="project_title">textFlow</h1>
-          <h2 id="project_tagline">Ruby script to convert iTunes album art into ASCII</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/drewish/textFlow/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/drewish/textFlow/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
-
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+        <ul>
+          <li><a href="https://github.com/drewish/textFlow/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/drewish/textFlow/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/drewish/textFlow">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <h1>
 <a name="textflow" class="anchor" href="#textflow"><span class="octicon octicon-link"></span></a>textFlow</h1>
 
@@ -40,29 +37,49 @@ converts the current track's album art into ASCII for display in a terminal.</p>
 <h2>
 <a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
-<p>You'll need to use MacPorts (<a href="http://www.macports.org">http://www.macports.org</a>) to install ImageMagick
-and jp2a:
-    sudo port install jp2a imagemagick +no_x11</p>
+<p>You'll need to use <a href="http://brew.sh/">Homebrew</a> to install ImageMagick
+and jp2a:</p>
 
-<p>You'll also need to use Ruby's gem to install ncurses and appscript:
-    sudo gem install ncurses rb-appscript</p>
+<pre><code>brew install jp2a imagemagick
+</code></pre>
+
+<p>You'll also need to install the appscript gem:</p>
+
+<pre><code>gem install rb-appscript
+</code></pre>
+
+<p>or</p>
+
+<pre><code>bundle install
+</code></pre>
 
 <h2>
+<a name="operation" class="anchor" href="#operation"><span class="octicon octicon-link"></span></a>Operation</h2>
+
+<p>Start the program:</p>
+
+<pre><code>./textFlow.rb
+</code></pre>
+
+<p>Then:</p>
+
+<ul>
+<li>switch between songs with the arrow keys</li>
+<li>pause and play with the spacebar</li>
+<li>mute and unmute (100% volume) with down and up keys</li>
+<li>quit with <code>q</code>
+</li>
+</ul><h2>
 <a name="for-more-information" class="anchor" href="#for-more-information"><span class="octicon octicon-link"></span></a>For more information</h2>
 
 <p>See <a href="http://drewish.com/node/130">http://drewish.com/node/130</a> or <a href="http://github.com/drewish/textFlow">http://github.com/drewish/textFlow</a></p>
       </section>
-    </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">textFlow maintained by <a href="https://github.com/drewish">drewish</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/drewish">drewish</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-
+    <script src="javascripts/scale.fix.js"></script>
     
-
   </body>
 </html>
