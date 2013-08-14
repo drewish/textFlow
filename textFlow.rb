@@ -57,7 +57,7 @@ def ascii_album image
   IO.popen(cmd, 'r+') do |pipe|
     pipe << image
     pipe.close_write
-    pipe.readlines
+    pipe.read
   end
 end
 
@@ -66,7 +66,7 @@ def ansi_album image
   IO.popen(cmd, 'r+') do |pipe|
     pipe << image
     pipe.close_write
-    pipe.readlines
+    pipe.read
   end
 end
 
@@ -84,23 +84,23 @@ end
 def draw_album current_track
   return 0 unless has_art? current_track
 
+  image = art_from current_track
+
   stdscr.setpos 0, 0
 
-  image = art_from current_track
   if has_colors?
-    ansi = ansi_album image
-    ansi.each do |line|
-      # Extract each pair of ANSI color and text (including resets).
-      line.scan /\e\[(\d{1,2})m([^\e]+)?/ do |code, text|
-        attron color_pair(code.to_i) | A_NORMAL
-        stdscr << text
-      end
-    end
-    ansi.first.chomp.gsub(/\e\[\d{1,2}m/, '').length
+    remaining = ansi = ansi_album image
+    stdscr.color_set 0
+    begin
+      text, code, remaining = remaining.partition(/\e\[\d{1,2}m/)
+      stdscr << text if text
+      stdscr.color_set code[2..-2].to_i if code
+    end until (remaining.empty?)
+    ansi.gsub(/\e\[\d{1,2}m/, '').index "\n"
   else
     ascii = ascii_album image
-    stdscr << ascii.join
-    ascii.first.length
+    stdscr << ascii
+    ascii.index "\n"
   end
 end
 
@@ -109,11 +109,12 @@ begin
   init_screen
   if has_colors?
     start_color
+    use_default_colors
     [ COLOR_BLACK, COLOR_RED, COLOR_GREEN, COLOR_YELLOW,
       COLOR_BLUE, COLOR_MAGENTA, COLOR_CYAN, COLOR_WHITE
     ].each do |c|
       # Use the ANSI color number as the pair's number.
-      init_pair 30 + c, c, COLOR_BLACK
+      init_pair 30 + c, c, -1
     end
   end
   cbreak           # provide unbuffered input
