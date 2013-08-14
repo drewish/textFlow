@@ -27,8 +27,9 @@ Start the program:
 Then:
 
 - switch between songs with the arrow keys
-- pause and play with the spacebar
+- pause and play with the `space`
 - mute and unmute (100% volume) with down and up keys
+- save current album art to artwork with `s`
 - quit with `q`
 
 ## For more information

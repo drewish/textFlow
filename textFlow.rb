@@ -70,6 +70,17 @@ def ansi_album image
   end
 end
 
+def save_artwork current_track
+  image = art_from current_track
+  File.open("artwork.txt",'w') do |file|
+    file << if has_colors? then
+      ansi_album image
+    else
+      ascii_album image
+    end
+  end
+end
+
 def draw_album current_track
   return 0 unless has_art? current_track
 
@@ -152,6 +163,7 @@ begin
       when Curses::KEY_LEFT  then it.previous_track
       when Curses::KEY_UP    then osax.set_volume output_volume: 100
       when Curses::KEY_DOWN  then osax.set_volume output_volume: 0
+      when 's'[0], 'S'[0]    then save_artwork it.current_track
       when 'q'[0], 'Q'[0]    then exit
       end
     end
